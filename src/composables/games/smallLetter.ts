@@ -52,6 +52,13 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
     const canvas = canvasRef.value
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
+    // Draw border if flashBorderColor is set
+    if (flashBorderColor) {
+      ctx.strokeStyle = flashBorderColor
+      ctx.lineWidth = 10
+      ctx.strokeRect(0, 0, canvas.width, canvas.height)
+    }
+
     // Draw large letter (question)
     ctx.font = '80px Arial'
     ctx.fillStyle = 'black'
@@ -75,8 +82,11 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
     ctx.textAlign = 'center'
     positions = []
 
+    const totalOptions = options.length
+    const spacing = canvas.width / (totalOptions + 1) // Distribute evenly
+
     options.forEach((letter, index) => {
-      const x = 50 + index * 70
+      const x = spacing * (index + 1)
       const y = 200
       positions.push({ x, y, letter })
       ctx?.fillText(letter, x, y)
@@ -94,6 +104,9 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
     options = generateOptions(correctLetter)
     drawGame() // Start animation loop
   }
+
+  let flashBorderColor: string | null = null
+  let flashTimeout: ReturnType<typeof setTimeout> | null = null
 
   /**
    * Handle user clicking on letters in the canvas.
@@ -114,12 +127,23 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
       ) {
         if (pos.letter === correctLetter.toLowerCase()) {
           score.value++
-          setTimeout(startGame, 500) // Wait and restart
-          void correctSound.play() // Play correct sound
+          flashBorderColor = 'rgba(0, 255, 0, 0.5)' // Green flash
+          void correctSound.play()
+          setTimeout(startGame, 200) // Wait and restart
         } else {
-          void failSound.play() // Play fail sound
           mistakes.value++
+          flashBorderColor = 'rgba(255, 0, 0, 0.5)' // Red flash
+          void failSound.play()
         }
+
+        // Clear flash effect after 300ms
+        if (flashTimeout) {
+          clearTimeout(flashTimeout)
+        }
+
+        flashTimeout = setTimeout(() => {
+          flashBorderColor = null
+        }, 300)
       }
     })
   }
