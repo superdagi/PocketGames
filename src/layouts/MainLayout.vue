@@ -32,12 +32,12 @@ import type { IEssentialLinkProps } from 'src/ts/interfaces/IEssentialLinkProps'
 const linksList: IEssentialLinkProps[] = [
   {
     title: 'Liten bokstav',
-    icon: 'school',
+    icon: 'copyright',
     link: 'https://quasar.dev',
   },
   {
     title: 'Tall',
-    icon: 'code',
+    icon: 'pin',
     link: 'https://github.com/quasarframework',
   },
 ]

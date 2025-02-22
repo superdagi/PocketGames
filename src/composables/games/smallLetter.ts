@@ -10,13 +10,16 @@ interface Position {
 const alphabet: string[] = 'ABCDEFGHIJKLMNOPQRSTUVWXYÆØÅ'.split('')
 
 export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
+  const publicFolder =
+    import.meta.env.BASE_URL.length <= 2 ? window.location.origin + '/' : import.meta.env.BASE_URL
   const score = ref<number>(0)
   const mistakes = ref<number>(0)
   let correctLetter = ''
   let options: string[] = []
   let positions: Position[] = []
   let ctx: CanvasRenderingContext2D | null = null
-  const correctSound = new Audio('src/assets/sounds/correct.wav')
+  const correctSound = new Audio(publicFolder + '/sounds/correct.wav')
+  const failSound = new Audio(publicFolder + '/sounds/fail.mp3')
   let animationFrameId: number | null = null // Animation ID
 
   /**
@@ -111,9 +114,10 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
       ) {
         if (pos.letter === correctLetter.toLowerCase()) {
           score.value++
-          void correctSound.play() // Play correct sound
           setTimeout(startGame, 500) // Wait and restart
+          void correctSound.play() // Play correct sound
         } else {
+          void failSound.play() // Play fail sound
           mistakes.value++
         }
       }
