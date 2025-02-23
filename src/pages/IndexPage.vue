@@ -1,7 +1,7 @@
 <template>
   <q-page class="row justify-evenly">
     <div class="q-ma-xl q-pb-xl">
-      <game-board />
+      <game-board gameName="letter" />
     </div>
   </q-page>
 </template>

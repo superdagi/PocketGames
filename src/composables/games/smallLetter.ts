@@ -12,14 +12,17 @@ const alphabet: string[] = 'ABCDEFGHIJKLMNOPQRSTUVWXYÆØÅ'.split('')
 export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
   const publicFolder =
     import.meta.env.BASE_URL.length <= 2 ? window.location.origin + '/' : import.meta.env.BASE_URL
+
+  const correctSound = new Audio(publicFolder + '/sounds/correct.wav')
+  const failSound = new Audio(publicFolder + '/sounds/fail.mp3')
+
   const score = ref<number>(0)
   const mistakes = ref<number>(0)
   let correctLetter = ''
   let options: string[] = []
   let positions: Position[] = []
   let ctx: CanvasRenderingContext2D | null = null
-  const correctSound = new Audio(publicFolder + '/sounds/correct.wav')
-  const failSound = new Audio(publicFolder + '/sounds/fail.mp3')
+
   let animationFrameId: number | null = null // Animation ID
 
   /**
@@ -149,11 +152,16 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
         if (pos.letter === correctLetter.toLowerCase()) {
           score.value++
           flashBorderColor = 'rgba(0, 255, 0, 0.5)' // Green flash
+
+          correctSound.currentTime = 0 // Reset playback position
           void correctSound.play()
+
           setTimeout(startGame, 200) // Wait and restart
         } else {
           mistakes.value++
           flashBorderColor = 'rgba(255, 0, 0, 0.5)' // Red flash
+
+          failSound.currentTime = 0 // Reset playback position
           void failSound.play()
         }
 
@@ -205,9 +213,22 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
     }
   })
 
+  function stopGame(): void {
+    if (animationFrameId !== null) {
+      cancelAnimationFrame(animationFrameId)
+      animationFrameId = null // Prevent further animation
+    }
+
+    window.removeEventListener('resize', resizeCanvas)
+    if (canvasRef.value) {
+      canvasRef.value.removeEventListener('click', handleClick)
+    }
+  }
+
   return {
     score,
     mistakes,
     startGame,
+    stopGame,
   }
 }
