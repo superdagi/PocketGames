@@ -36,8 +36,12 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
     const optionSet = new Set<string>()
     optionSet.add(correct.toLowerCase())
 
-    while (optionSet.size < 5) {
-      optionSet.add(String.fromCharCode(97 + Math.floor(Math.random() * 26)))
+    // Base choices = 5, then +5 every 10 points, capped at 29
+    const additionalChoices = Math.floor(score.value / 20) * 5
+    const optionCount = Math.min(5 + additionalChoices, 25) // Limit to max 29
+
+    while (optionSet.size < optionCount) {
+      optionSet.add(getRandomLetter().toLowerCase())
     }
 
     return Array.from(optionSet).sort(() => Math.random() - 0.5)
@@ -52,7 +56,7 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
     const canvas = canvasRef.value
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    // Draw border if flashBorderColor is set
+    // Draw flashing border effect if needed
     if (flashBorderColor) {
       ctx.strokeStyle = flashBorderColor
       ctx.lineWidth = 10
@@ -80,17 +84,34 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
     ctx.font = '40px Arial'
     ctx.fillStyle = 'black'
     ctx.textAlign = 'center'
+
+    // --- Dynamic Row Management ---
+    const totalOptions = options.length
+    const maxPerRow = 5 // Maximum choices per row
+    const rows = Math.ceil(totalOptions / maxPerRow) // Number of rows needed
+    const rowHeight = 70 // Space between rows
+
     positions = []
 
-    const totalOptions = options.length
-    const spacing = canvas.width / (totalOptions + 1) // Distribute evenly
+    for (let row = 0; row < rows; row++) {
+      const startIdx = row * maxPerRow
+      const endIdx = Math.min(startIdx + maxPerRow, totalOptions)
+      const rowItemCount = endIdx - startIdx // Number of items in this row
 
-    options.forEach((letter, index) => {
-      const x = spacing * (index + 1)
-      const y = 200
-      positions.push({ x, y, letter })
-      ctx?.fillText(letter, x, y)
-    })
+      if (rowItemCount === 0) continue // Prevent invalid row calculations
+
+      const xSpacing = canvas.width / (rowItemCount + 1)
+
+      for (let col = 0; col < rowItemCount; col++) {
+        const x = xSpacing * (col + 1)
+        const y = 200 + row * rowHeight // Offset for each row
+
+        const letter = options[startIdx + col]
+        if (!letter) continue
+        positions.push({ x, y, letter })
+        ctx.fillText(letter, x, y)
+      }
+    }
 
     // Request the next frame (keeps game running)
     animationFrameId = requestAnimationFrame(drawGame)

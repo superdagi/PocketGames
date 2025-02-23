@@ -19,7 +19,7 @@ const resizeCanvas = () => {
   if (!canvas) return
 
   canvas.width = window.innerWidth * 0.8 // 90% of the window width
-  canvas.height = window.innerHeight * 0.6 // 60% of the window height
+  canvas.height = window.innerHeight * 0.8 // 60% of the window height
 }
 
 // Handle setup and cleanup
