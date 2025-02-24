@@ -6,12 +6,22 @@
 
 <script setup lang="ts">
 import { useTenFriendGame } from 'src/composables/games/tenFriends'
+import { useLetterGame } from 'src/composables/games/smallLetter'
 
 import { onMounted, onUnmounted, ref } from 'vue'
 
+const props = defineProps({
+  gameName: {
+    type: String,
+    required: false,
+    restrict: ['letter', 'tenFriend'],
+  },
+})
+
 // Define canvas reference
 const canvasRef = ref<HTMLCanvasElement | null>(null)
-const tenFriends = useTenFriendGame(canvasRef)
+
+const game = props.gameName == 'letter' ? useLetterGame(canvasRef) : useTenFriendGame(canvasRef)
 
 // Function to resize canvas dynamically
 const resizeCanvas = () => {
@@ -27,7 +37,7 @@ onMounted(() => {
   resizeCanvas() // Set initial size
   window.addEventListener('resize', resizeCanvas) // Resize on window change
   // startAnimation()
-  tenFriends.startGame()
+  game.startGame()
 })
 
 onUnmounted(() => {

@@ -59,7 +59,7 @@ const linksList: IEssentialLinkProps[] = [
   {
     title: 'Tiervenn',
     icon: 'pin',
-    link: '/tenFriend',
+    link: '/ten-friends',
   },
 ]
 
