@@ -14,7 +14,21 @@
       <q-list>
         <q-item-label header> Velg spill </q-item-label>
 
-        <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
+        <q-list>
+          <q-item
+            v-for="(link, i) in linksList"
+            :key="i"
+            clickable
+            @click="navigateTo(link.link ?? '')"
+          >
+            <q-item-section avatar>
+              <q-icon :name="link.icon" />
+            </q-item-section>
+            <q-item-section>
+              {{ link.title }}
+            </q-item-section>
+          </q-item>
+        </q-list>
       </q-list>
     </q-drawer>
 
@@ -26,19 +40,26 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
 import type { IEssentialLinkProps } from 'src/ts/interfaces/IEssentialLinkProps'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+// Function to navigate using Vue Router
+const navigateTo = (path: string) => {
+  void router.push(path) // Navigates to the specified path
+}
 
 const linksList: IEssentialLinkProps[] = [
   {
     title: 'Liten bokstav',
     icon: 'copyright',
-    link: 'https://quasar.dev',
+    link: '/letter',
   },
   {
-    title: 'Tall',
+    title: 'Tiervenn',
     icon: 'pin',
-    link: 'https://github.com/quasarframework',
+    link: '/tenFriend',
   },
 ]
 

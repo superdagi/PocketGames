@@ -1,17 +1,21 @@
 <template>
-  <q-page class="flex">
+  <q-page>
+    <div class="row" style="font-size: 24px">
+      <span class="col-2" style="color: blue">Poeng: {{ letterGame.score }}</span>
+      <span style="color: red">Feil: {{ letterGame.mistakes }}</span>
+    </div>
     <canvas ref="canvasRef" />
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { useTenFriendGame } from 'src/composables/games/tenFriends'
+import { useLetterGame } from 'src/composables/games/smallLetter'
 
 import { onMounted, onUnmounted, ref } from 'vue'
 
 // Define canvas reference
 const canvasRef = ref<HTMLCanvasElement | null>(null)
-const tenFriends = useTenFriendGame(canvasRef)
+const letterGame = useLetterGame(canvasRef)
 
 // Function to resize canvas dynamically
 const resizeCanvas = () => {
@@ -27,7 +31,7 @@ onMounted(() => {
   resizeCanvas() // Set initial size
   window.addEventListener('resize', resizeCanvas) // Resize on window change
   // startAnimation()
-  tenFriends.startGame()
+  letterGame.startGame()
 })
 
 onUnmounted(() => {

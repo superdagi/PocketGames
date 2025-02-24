@@ -282,6 +282,7 @@ export function useTenFriendGame(canvasRef: Ref<HTMLCanvasElement | null>) {
 
   return {
     score,
+    mistakes,
     startGame,
     stopGame,
     drawGame,

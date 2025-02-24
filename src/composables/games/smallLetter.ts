@@ -54,9 +54,13 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
    * Draw the game UI on the canvas (continuous loop)
    */
   function drawGame(): void {
-    if (!ctx || !canvasRef.value) return
+    if (!canvasRef.value) return
 
     const canvas = canvasRef.value
+    ctx = canvas.getContext('2d')
+
+    if (!ctx) return
+
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     // Draw flashing border effect if needed
@@ -124,6 +128,7 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
    * Start a new game round with a new random letter.
    */
   function startGame(): void {
+    console.log('Letter game has started')
     correctLetter = getRandomLetter()
     options = generateOptions(correctLetter)
     drawGame() // Start animation loop
@@ -196,7 +201,6 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
     if (!ctx) return
 
     resizeCanvas() // Set initial size
-    window.addEventListener('resize', resizeCanvas)
     canvas.addEventListener('click', handleClick)
     startGame()
   })
@@ -230,5 +234,7 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
     mistakes,
     startGame,
     stopGame,
+    handleClick,
+    drawGame,
   }
 }
