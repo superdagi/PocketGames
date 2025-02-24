@@ -2,14 +2,19 @@ import type { RouteRecordRaw } from 'vue-router'
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '/:gameName?',
+    path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/IndexPage.vue') }],
   },
 
-  //indexpage with gameName prop
   {
-    path: '/:small-letter',
+    path: '/letter',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/SmallLetter.vue') }],
+  },
+  //route for ath: '', component: () => import('pages/TenFriend.vue')
+  {
+    path: '/ten-friends',
     component: () => import('layouts/MainLayout.vue'),
     children: [{ path: '', component: () => import('pages/TenFriend.vue') }],
   },

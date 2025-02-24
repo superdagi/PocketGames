@@ -152,7 +152,7 @@ export function useLetterGame(canvasRef: Ref<HTMLCanvasElement | null>) {
         mouseX > pos.x - 20 &&
         mouseX < pos.x + 20 &&
         mouseY > pos.y - 40 &&
-        mouseY < pos.y + 10
+        mouseY < pos.y + 35
       ) {
         if (pos.letter === correctLetter.toLowerCase()) {
           score.value++
