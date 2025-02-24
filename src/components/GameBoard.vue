@@ -21,7 +21,7 @@ const props = defineProps({
 // Define canvas reference
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 
-const game = props.gameName == 'letter' ? useLetterGame(canvasRef) : useTenFriendGame(canvasRef)
+const game = props.gameName == 'letter' ? useTenFriendGame(canvasRef) : useLetterGame(canvasRef)
 
 // Function to resize canvas dynamically
 const resizeCanvas = () => {

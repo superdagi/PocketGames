@@ -27,7 +27,6 @@ const resizeCanvas = () => {
 
 // Handle setup and cleanup
 onMounted(() => {
-  debugger
   resizeCanvas() // Set initial size
   window.addEventListener('resize', resizeCanvas) // Resize on window change
   // startAnimation()
