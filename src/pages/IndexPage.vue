@@ -7,11 +7,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent } from 'vue'
+import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import SmallLetter from 'src/components/SmallLetter.vue'
+import TenFriend from 'src/components/TenFriend.vue'
 
-const SmallLetter = defineAsyncComponent(() => import('src/components/SmallLetter.vue'))
-const TenFriend = defineAsyncComponent(() => import('src/components/TenFriend.vue'))
 const props = defineProps({
   gameName: {
     type: String,
