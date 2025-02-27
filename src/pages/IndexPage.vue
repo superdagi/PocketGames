@@ -17,13 +17,14 @@ const props = defineProps({
     type: String,
     required: false,
     restrict: ['letter', 'tenFriend'],
+    default: 'letter',
   },
 })
 
 const route = useRoute()
 const currentGame = computed(() => props.gameName || (route.params.gameName as string))
 
-console.log(route.params.gameName)
+console.log(currentGame.value)
 //key is game name object  is component
 const games: Record<string, unknown> = {
   letter: SmallLetter,

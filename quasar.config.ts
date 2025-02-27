@@ -51,7 +51,7 @@ export default defineConfig((/* ctx */) => {
       // rebuildCache: true, // rebuilds Vite/linter/etc cache on startup
 
       // publicPath: '/',
-      publicPath: process.env.NODE_ENV === 'production' ? '/PocketGames/' : '/',
+      publicPath: '/PocketGames/',
       // analyze: true,
       // env: {},
       // rawDefine: {}

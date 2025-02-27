@@ -1,7 +1,6 @@
 <template>
   <q-page>
     <div class="row" style="font-size: 24px">
-      s
       <span class="col-4" style="color: blue">Poeng: {{ tenFriends.score }}</span>
       <span style="color: red">Feil: {{ tenFriends.mistakes }}</span>
     </div>
