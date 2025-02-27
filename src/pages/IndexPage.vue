@@ -7,11 +7,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 import { useRoute } from 'vue-router'
-import SmallLetter from 'src/components/SmallLetter.vue'
-import TenFriend from 'src/components/TenFriend.vue'
 
+const SmallLetter = defineAsyncComponent(() => import('src/components/SmallLetter.vue'))
+const TenFriend = defineAsyncComponent(() => import('src/components/TenFriend.vue'))
 const props = defineProps({
   gameName: {
     type: String,
@@ -24,7 +24,7 @@ const props = defineProps({
 const route = useRoute()
 const currentGame = computed(() => props.gameName || (route.params.gameName as string))
 
-console.log(currentGame.value)
+console.log(currentGame)
 //key is game name object  is component
 const games: Record<string, unknown> = {
   letter: SmallLetter,
