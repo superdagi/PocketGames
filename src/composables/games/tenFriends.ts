@@ -1,4 +1,4 @@
-import { ref, onMounted, onUnmounted, type Ref } from 'vue'
+import { ref, onMounted, onUnmounted, type Ref, computed } from 'vue'
 
 interface FallingNumber {
   x: number
@@ -53,7 +53,7 @@ export function useTenFriendGame(canvasRef: Ref<HTMLCanvasElement | null>) {
       let y = 0
       let valid = false
       while (!valid) {
-        x = Math.random() * (canvasRef.value!.width - 40)
+        x = Math.random() * (canvasRef.value!.width - 40) + 20 // Ensure within bounds
         y = -Math.random() * 80 // Random Y position between -80 and 0
         valid = positions.every((pos) => Math.abs(pos.x - x) > 50) // Ensure spacing
       }
@@ -88,12 +88,18 @@ export function useTenFriendGame(canvasRef: Ref<HTMLCanvasElement | null>) {
    * Update game logic (falling numbers movement).
    */
   function updateGame(): void {
-    fallingNumbers.forEach((num) => (num.y += 0.3))
+    if (!canvasRef.value) return
 
-    // Remove numbers that go off-screen
+    const now = performance.now()
+    const deltaTime = (now - lastTime) / 16.67 // Normalize to 60 FPS
+    lastTime = now
+
+    const fallSpeedPerFrame = baseTime.value * deltaTime // Ensures consistent speed
+
+    fallingNumbers.forEach((num) => (num.y += fallSpeedPerFrame))
+
     fallingNumbers = fallingNumbers.filter((num) => num.y < canvasRef.value!.height)
 
-    // Ensure only three numbers exist at a time
     while (fallingNumbers.length < 3) {
       spawnNumbers()
     }
@@ -207,11 +213,14 @@ export function useTenFriendGame(canvasRef: Ref<HTMLCanvasElement | null>) {
     if (!canvasRef.value) return
 
     const rect = canvasRef.value.getBoundingClientRect()
-    const clickX = event.clientX - rect.left
-    const clickY = event.clientY - rect.top
+    const scaleX = canvasRef.value.width / rect.width // Scale factor for X
+    const scaleY = canvasRef.value.height / rect.height // Scale factor for Y
+
+    const clickX = (event.clientX - rect.left) * scaleX
+    const clickY = (event.clientY - rect.top) * scaleY
 
     fallingNumbers.forEach((num) => {
-      const dx = clickX - (num.x + 20)
+      const dx = clickX - (num.x + 20) // Adjust circle center
       const dy = clickY - (num.y + 20)
       const distance = Math.sqrt(dx * dx + dy * dy)
 
@@ -230,10 +239,18 @@ export function useTenFriendGame(canvasRef: Ref<HTMLCanvasElement | null>) {
    */
   const resizeCanvas = (): void => {
     if (!canvasRef.value) return
-    canvasRef.value.width = window.innerWidth * 0.8
-    canvasRef.value.height = window.innerHeight * 0.6
+    const width = window.innerWidth * 0.8
+    const height = window.innerHeight * 0.6
+    canvasRef.value.width = width
+    canvasRef.value.height = height
+
     drawGame() // Redraw after resizing
   }
+
+  let lastTime = performance.now()
+  const baseTime = computed(() => {
+    return score.value < 15 ? 0.3 : score.value < 25 ? 0.4 : 0.6
+  })
 
   onMounted(() => {
     if (!canvasRef.value) return
