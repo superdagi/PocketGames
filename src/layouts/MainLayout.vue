@@ -47,6 +47,8 @@ const router = useRouter()
 
 // Function to navigate using Vue Router
 const navigateTo = (path: string) => {
+  toggleLeftDrawer()
+
   void router.push(path) // Navigates to the specified path
 }
 
